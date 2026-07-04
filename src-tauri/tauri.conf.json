@@ -62,7 +62,7 @@
     "longDescription": "Open Snipping is a fast, keyboard-friendly screenshot tool for Linux. Select a region of your screen, copy to clipboard, or save as JPEG. Built with Tauri and Angular.",
     "linux": {
       "deb": {
-        "depends": ["grim", "libwebkit2gtk-4.1-0", "libgtk-3-0"]
+        "depends": ["grim", "scrot", "libwebkit2gtk-4.1-0", "libgtk-3-0"]
       },
       "appimage": {
         "bundleMediaFramework": true
