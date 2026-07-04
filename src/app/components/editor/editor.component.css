@@ -12,7 +12,7 @@
      #141010  canvas bg
    ═══════════════════════════════════════════════════════════ */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+/* Inter is loaded via app.component.css; stack falls back to system UI */
 
 /* ── Shell ─────────────────────────────────────────────────── */
 .editor-shell {
