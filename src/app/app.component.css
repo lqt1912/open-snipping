@@ -89,3 +89,84 @@ body {
   color: #b0998f;
   letter-spacing: 0.02em;
 }
+
+/* ── Shortcut area ────────────────────────────────────────── */
+.shortcut-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.shortcut-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  background: transparent;
+  border: 1px solid #c8b8ae;
+  border-radius: 5px;
+  color: #8a7060;
+  font-family: inherit;
+  font-size: 0.7rem;
+  cursor: pointer;
+  transition: background 0.1s, border-color 0.1s, color 0.1s;
+  user-select: none;
+}
+
+.shortcut-btn svg {
+  width: 12px;
+  height: 12px;
+  flex-shrink: 0;
+  opacity: 0.6;
+}
+
+.shortcut-btn:hover {
+  background: rgba(92, 64, 51, 0.07);
+  border-color: #8b6150;
+  color: #5c4033;
+}
+
+kbd {
+  font-family: 'Inter', ui-monospace, monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.03em;
+  color: #6b5248;
+}
+
+/* Recording state */
+.shortcut-btn.recording {
+  border-color: #8b6150;
+  color: #5c4033;
+  background: rgba(92, 64, 51, 0.07);
+  gap: 6px;
+}
+
+.esc-hint {
+  color: #b0998f;
+  font-size: 0.65rem;
+}
+
+/* Pulsing dot indicator */
+.pulse-dot {
+  width: 6px;
+  height: 6px;
+  background: #8b6150;
+  border-radius: 50%;
+  flex-shrink: 0;
+  animation: pulse 1s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.4; transform: scale(0.75); }
+}
+
+/* Error text */
+.shortcut-error {
+  font-size: 0.65rem;
+  color: #b06050;
+  text-align: center;
+  max-width: 220px;
+}
+

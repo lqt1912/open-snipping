@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
+import { Component, OnInit, OnDestroy, NgZone, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { OverlayComponent } from './components/overlay/overlay.component';
 import { EditorComponent } from './components/editor/editor.component';
@@ -22,6 +22,11 @@ export class AppComponent implements OnInit, OnDestroy {
   croppedImagePath: string | null = null;
   isOverlayWindow = false;
 
+  // ── Hotkey state ────────────────────────────────────────────
+  currentHotkey   = 'Ctrl+Shift+S';
+  isRecording     = false;
+  hotkeyError     = '';
+
   private unlistenCropReady?: UnlistenFn;
   private win = getCurrentWindow();
 
@@ -35,13 +40,16 @@ export class AppComponent implements OnInit, OnDestroy {
       return;
     }
 
+    // Load persisted hotkey from Rust
+    try {
+      this.currentHotkey = await invoke<string>('get_hotkey');
+    } catch { /* keep default */ }
+
     this.unlistenCropReady = await listen<string>('crop-ready', (event) => {
       const path = event.payload;
-      console.log('[main] crop-ready received, path:', path);
       this.zone.run(async () => {
         this.croppedImagePath = path;
         this.mode = 'editor';
-        // Expand to editor size, allow resize, re-center
         await this.win.setResizable(true);
         await this.win.setSize(EDITOR_SIZE);
         await this.win.center();
@@ -60,9 +68,88 @@ export class AppComponent implements OnInit, OnDestroy {
   async onEditorClosed() {
     this.croppedImagePath = null;
     this.mode = 'launcher';
-    // Shrink back and lock size for launcher
     await this.win.setResizable(false);
     await this.win.setSize(LAUNCHER_SIZE);
     await this.win.center();
+  }
+
+  // ── Hotkey recording ─────────────────────────────────────────
+
+  startRecording() {
+    this.isRecording = true;
+    this.hotkeyError = '';
+  }
+
+  cancelRecording() {
+    this.isRecording = false;
+  }
+
+  @HostListener('window:keydown', ['$event'])
+  async onKeyDown(event: KeyboardEvent) {
+    if (!this.isRecording) return;
+    event.preventDefault();
+    event.stopPropagation();
+
+    // Escape = cancel
+    if (event.key === 'Escape') {
+      this.isRecording = false;
+      return;
+    }
+
+    // Collect modifiers
+    const mods: string[] = [];
+    if (event.ctrlKey)  mods.push('Ctrl');
+    if (event.altKey)   mods.push('Alt');
+    if (event.shiftKey) mods.push('Shift');
+    if (event.metaKey)  mods.push('Super');
+
+    // Ignore bare modifier key presses — wait for the actual key
+    if (['Control', 'Alt', 'Shift', 'Meta'].includes(event.key)) return;
+
+    // Require at least one modifier to prevent accidentally overriding letters
+    if (mods.length === 0) {
+      this.hotkeyError = 'Use at least one modifier (Ctrl, Alt, Shift)';
+      return;
+    }
+
+    // Normalize key name
+    const key = this.normalizeKey(event.key);
+    const hotkey = [...mods, key].join('+');
+
+    this.isRecording = false;
+
+    try {
+      await invoke('update_hotkey', { hotkey });
+      this.zone.run(() => {
+        this.currentHotkey = hotkey;
+        this.hotkeyError   = '';
+      });
+    } catch (e) {
+      this.zone.run(() => {
+        this.hotkeyError = `Could not register "${hotkey}" — key may be taken by another app.`;
+      });
+    }
+  }
+
+  /** Normalize browser `KeyboardEvent.key` to a Tauri-compatible token. */
+  private normalizeKey(key: string): string {
+    if (key.length === 1) return key.toUpperCase();
+    const map: Record<string, string> = {
+      ' ':           'Space',
+      'ArrowUp':     'Up',
+      'ArrowDown':   'Down',
+      'ArrowLeft':   'Left',
+      'ArrowRight':  'Right',
+      'Enter':       'Return',
+      'Backspace':   'BackSpace',
+      'Delete':      'Delete',
+      'Home':        'Home',
+      'End':         'End',
+      'PageUp':      'PageUp',
+      'PageDown':    'PageDown',
+      'Insert':      'Insert',
+      'Tab':         'Tab',
+    };
+    return map[key] ?? key;  // F1-F12 already have the right format
   }
 }
