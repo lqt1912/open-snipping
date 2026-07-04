@@ -37,17 +37,15 @@ export class OverlayComponent implements OnInit, OnDestroy {
   async ngOnInit() {
     const win = getCurrentWindow();
 
-    // Focus handler: reset state each time overlay is shown.
-    // show_overlay() triggers the background screenshot — we just wait here.
-    this.unlistenFocus = await win.onFocusChanged(({ payload: focused }) => {
-      if (focused) {
-        this.zone.run(() => {
-          this.imagePath = null;
-          this.isSelecting = false;
-          this.selection = null;
-          this.isCapturing = true;  // wait for capture-ready
-        });
-      }
+    // Reset state each time a new capture is triggered.
+    // show_overlay() in Rust emits this immediately before taking the screenshot.
+    this.unlistenFocus = await listen('capture-start', () => {
+      this.zone.run(() => {
+        this.imagePath = null;
+        this.isSelecting = false;
+        this.selection = null;
+        this.isCapturing = true;  // wait for capture-ready
+      });
     });
 
     // Rust emits 'capture-ready' after grim finishes (500ms after show_overlay).

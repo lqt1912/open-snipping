@@ -30,7 +30,7 @@ pub fn do_capture() -> Result<String, String> {
     } else {
         let status = Command::new("scrot")
             .arg(&file_path)
-            .args(["-z", "--quality", "90"])
+            .args(["--overwrite", "-z", "--quality", "90"])
             .status()
             .map_err(|e| format!("Failed to execute scrot: {}", e))?;
         if !status.success() {

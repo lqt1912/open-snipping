@@ -67,12 +67,14 @@ fn save_hotkey(app: &tauri::AppHandle, hotkey: &str) {
 // ── Capture trigger — shared by hotkey handler, tray menu, and show_overlay ─
 
 fn trigger_capture(app: &tauri::AppHandle) {
+    println!("[trigger_capture] Called!");
     if let Some(w) = app.get_webview_window("main") {
         let _ = w.hide();
     }
     if let Some(overlay) = app.get_webview_window("overlay") {
         let _ = overlay.show();
         let _ = overlay.set_focus();
+        let _ = overlay.emit("capture-start", ());
     }
     let app2 = app.clone();
     tauri::async_runtime::spawn(async move {
@@ -221,9 +223,10 @@ pub fn run() {
             let quit_item    = MenuItem::with_id(app, "quit",    "Quit",         true, None::<&str>)?;
             let tray_menu    = Menu::with_items(app, &[&capture_item, &show_item, &sep, &quit_item])?;
 
-            TrayIconBuilder::new()
+            TrayIconBuilder::with_id("open-snipping")
                 .icon(app.default_window_icon().unwrap().clone())
                 .tooltip("Open Snipping")
+                .title("Open Snipping")
                 .menu(&tray_menu)
                 .show_menu_on_left_click(false)   // left-click = show window; right-click = menu
                 .on_menu_event(|app, event| {
