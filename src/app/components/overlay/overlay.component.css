@@ -1,0 +1,31 @@
+/* Overlay root — covers full screen */
+.overlay-root {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  user-select: none;
+  cursor: crosshair;
+
+  /* Dim the screen while user selects — visible only when NOT capturing */
+  background: rgba(0, 0, 0, 0.30);
+  transition: background 0.15s ease;
+}
+
+/* While grim is taking the screenshot, make the overlay COMPLETELY invisible.
+   This ensures grim captures a clean screen with no overlay artifacts. */
+.overlay-root.is-capturing {
+  background: transparent !important;
+  pointer-events: none;
+}
+
+/* Selection rectangle with "hole" shadow effect */
+.selection-box {
+  position: absolute;
+  border: 2px solid rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.05);
+  pointer-events: none;
+  /* Dark vignette outside the selection */
+  box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.45);
+}
