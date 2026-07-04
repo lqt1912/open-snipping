@@ -6,6 +6,25 @@
     "main"
   ],
   "permissions": [
-    "core:default"
+    "core:default",
+    "clipboard-manager:default",
+    "clipboard-manager:allow-write-image",
+    "dialog:default",
+    "fs:default",
+    {
+      "identifier": "fs:allow-read-file",
+      "allow": [{ "path": "$TMPDIR/**" }, { "path": "/tmp/**" }]
+    },
+    {
+      "identifier": "fs:allow-write-file",
+      "allow": [{ "path": "$TMPDIR/**" }, { "path": "/tmp/**" }]
+    },
+    {
+      "identifier": "fs:allow-read",
+      "allow": [{ "path": "$TMPDIR/**" }, { "path": "/tmp/**" }]
+    },
+    {
+      "identifier": "core:path:default"
+    }
   ]
 }

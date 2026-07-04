@@ -1,0 +1,24 @@
+<div class="fixed inset-0 w-full h-full bg-black bg-opacity-30 overflow-hidden select-none"
+     [class.cursor-wait]="isCapturing"
+     [class.cursor-crosshair]="!isCapturing"
+     (mousedown)="onMouseDown($event)"
+     (mousemove)="onMouseMove($event)"
+     (mouseup)="onMouseUp()">
+
+  <!-- Loading hint while capture is in progress -->
+  <div *ngIf="isCapturing"
+       class="absolute top-4 left-1/2 -translate-x-1/2 bg-black bg-opacity-60 text-white text-sm px-4 py-2 rounded-full pointer-events-none">
+    ⏳ Preparing...
+  </div>
+
+  <!-- Selection Box -->
+  <div *ngIf="isSelecting && selection"
+       class="absolute border-2 border-white bg-white bg-opacity-10 pointer-events-none shadow-[0_0_0_9999px_rgba(0,0,0,0.4)]"
+       [ngStyle]="{
+         'left.px': selection.x,
+         'top.px': selection.y,
+         'width.px': selection.width,
+         'height.px': selection.height
+       }">
+  </div>
+</div>

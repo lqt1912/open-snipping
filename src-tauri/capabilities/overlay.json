@@ -1,0 +1,19 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "overlay",
+  "description": "permissions for the overlay capture window",
+  "windows": [
+    "overlay"
+  ],
+  "permissions": [
+    "core:default",
+    {
+      "identifier": "fs:allow-read-file",
+      "allow": [{ "path": "$TMPDIR/**" }, { "path": "/tmp/**" }]
+    },
+    {
+      "identifier": "fs:allow-write-file",
+      "allow": [{ "path": "$TMPDIR/**" }, { "path": "/tmp/**" }]
+    }
+  ]
+}

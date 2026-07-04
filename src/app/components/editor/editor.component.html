@@ -1,0 +1,43 @@
+<div class="fixed inset-0 w-full h-full bg-gray-900 flex flex-col font-sans">
+  <!-- Toolbar -->
+  <div class="bg-gray-800 p-3 flex gap-4 shadow-md items-center">
+    <div class="text-white font-semibold text-lg mr-4">Open Snipping</div>
+
+    <button (click)="newCaptureRequest()"
+            class="px-4 py-2 bg-violet-600 hover:bg-violet-500 text-white rounded transition flex items-center gap-2">
+      📷 New Capture
+    </button>
+
+    <div class="w-px h-6 bg-gray-600"></div>
+
+    <button (click)="copyToClipboard()" [disabled]="isCopying"
+            class="px-4 py-2 rounded transition text-white"
+            [class]="copySuccess ? 'bg-green-600' : 'bg-blue-600 hover:bg-blue-500 disabled:opacity-50'">
+      {{ copySuccess ? '✓ Copied!' : (isCopying ? 'Copying...' : 'Copy') }}
+    </button>
+    <button (click)="saveAs()" [disabled]="isSaving"
+            class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white rounded transition">
+      {{ isSaving ? 'Saving...' : 'Save As...' }}
+    </button>
+
+    <div class="flex-1"></div>
+    <button (click)="closeEditor()" class="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded transition">Back</button>
+  </div>
+  
+  <!-- Canvas Area -->
+  <div class="flex-1 overflow-hidden flex justify-center items-center bg-gray-900 checkerboard-bg">
+    <img *ngIf="imageSrc" [src]="imageSrc"
+         class="shadow-2xl border border-gray-600 max-w-full max-h-full object-contain" />
+  </div>
+</div>
+
+<style>
+.checkerboard-bg {
+    background-image: linear-gradient(45deg, #1f2937 25%, transparent 25%), 
+                      linear-gradient(-45deg, #1f2937 25%, transparent 25%), 
+                      linear-gradient(45deg, transparent 75%, #1f2937 75%), 
+                      linear-gradient(-45deg, transparent 75%, #1f2937 75%);
+    background-size: 20px 20px;
+    background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+}
+</style>

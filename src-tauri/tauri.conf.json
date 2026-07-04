@@ -12,20 +12,37 @@
   "app": {
     "windows": [
       {
-        "title": "Open Snipping Overlay",
-        "width": 800,
-        "height": 600,
-        "resizable": false,
-        "fullscreen": false,
+        "label": "main",
+        "title": "Open Snipping",
+        "width": 960,
+        "height": 640,
+        "minWidth": 640,
+        "minHeight": 480,
+        "decorations": true,
+        "transparent": false,
+        "alwaysOnTop": false,
+        "visible": true,
+        "skipTaskbar": false,
+        "center": true
+      },
+      {
+        "label": "overlay",
+        "title": "Open Snipping – Capture",
+        "maximized": true,
+        "fullscreen": true,
         "decorations": false,
         "transparent": true,
-        "alwaysOnTop": true,
+        "alwaysOnTop": false,
         "visible": false,
         "skipTaskbar": true
       }
     ],
     "security": {
-      "csp": null
+      "csp": null,
+      "assetProtocol": {
+        "enable": true,
+        "scope": ["$TMPDIR/**", "/tmp/**", "**"]
+      }
     }
   },
   "bundle": {
