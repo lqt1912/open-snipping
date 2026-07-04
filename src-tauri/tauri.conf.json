@@ -1,6 +1,6 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
-  "productName": "open-snipping",
+  "productName": "Open Snipping",
   "version": "0.1.0",
   "identifier": "com.lqt1912.open-snipping",
   "build": {
@@ -62,7 +62,10 @@
     "longDescription": "Open Snipping is a fast, keyboard-friendly screenshot tool for Linux. Select a region of your screen, copy to clipboard, or save as JPEG. Built with Tauri and Angular.",
     "linux": {
       "deb": {
-        "depends": ["grim", "scrot", "libwebkit2gtk-4.1-0", "libgtk-3-0"]
+        "depends": ["grim", "scrot", "libwebkit2gtk-4.1-0", "libgtk-3-0"],
+        "files": {
+          "/usr/share/metainfo/com.lqt1912.open-snipping.metainfo.xml": "com.lqt1912.open-snipping.metainfo.xml"
+        }
       },
       "appimage": {
         "bundleMediaFramework": true

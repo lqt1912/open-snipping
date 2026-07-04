@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>com.lqt1912.open-snipping</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>MIT</project_license>
+  <name>Open Snipping</name>
+  <summary>A fast, keyboard-friendly screenshot tool</summary>
+  
+  <description>
+    <p>
+      Open Snipping is a lightweight screenshot application for Linux, designed to provide a seamless experience similar to the Windows Snipping Tool. It supports both X11 and Wayland environments.
+    </p>
+    <p>Features:</p>
+    <ul>
+      <li>Silent Fullscreen Capture: Instantly captures the entire screen when triggered.</li>
+      <li>Smart Overlay Window: Features a frameless, transparent overlay to focus on the selected area.</li>
+      <li>Select &amp; Crop: Click and drag to define the exact region you want to capture.</li>
+      <li>Editor Canvas for quick annotations.</li>
+      <li>Quick Export &amp; Copy: Instantly copy the snip to your clipboard or save it as an image file.</li>
+      <li>Global Hotkeys.</li>
+    </ul>
+  </description>
+
+  <launchable type="desktop-id">com.lqt1912.open-snipping.desktop</launchable>
+
+  <screenshots>
+    <screenshot type="default">
+      <image>https://raw.githubusercontent.com/lqt1912/open-snipping/main/src-tauri/icons/Square310x310Logo.png</image>
+    </screenshot>
+  </screenshots>
+
+  <developer_name>lqt1912</developer_name>
+  <url type="homepage">https://github.com/lqt1912/open-snipping</url>
+  <url type="bugtracker">https://github.com/lqt1912/open-snipping/issues</url>
+
+  <!-- Required for Software Centers to not show "No age rating information available" -->
+  <content_rating type="oars-1.1" />
+
+  <releases>
+    <release version="0.1.0" date="2026-07-04" />
+  </releases>
+</component>
