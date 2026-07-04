@@ -5,7 +5,7 @@
 
   <p>
     <a href="https://github.com/lqt1912/open-snipping/releases/latest"><img alt="Latest Release" src="https://img.shields.io/github/v/release/lqt1912/open-snipping?style=flat-square&color=blue" /></a>
-    <a href="https://github.com/lqt1912/open-snipping/blob/main/LICENSE?t=1"><img alt="License" src="https://img.shields.io/github/license/lqt1912/open-snipping?style=flat-square" /></a>
+    <a href="https://github.com/lqt1912/open-snipping/blob/main/LICENSE"><img alt="License" src="https://img.shields.io/github/license/lqt1912/open-snipping?style=flat-square&v=1" /></a>
     <a href="https://github.com/lqt1912/open-snipping/actions"><img alt="Build Status" src="https://img.shields.io/github/actions/workflow/status/lqt1912/open-snipping/release.yml?style=flat-square" /></a>
   </p>
 </div>
