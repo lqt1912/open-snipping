@@ -73,3 +73,4 @@ Feel free to check the [issues page](https://github.com/lqt1912/open-snipping/is
 ## 📝 License
 
 This project is licensed under the [MIT License](LICENSE).
+
