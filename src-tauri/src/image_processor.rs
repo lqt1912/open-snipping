@@ -8,6 +8,18 @@ use crate::{AppState, ClipCache, ScreenCache};
 
 const JPEG_QUALITY: u8 = 85;
 
+/// Invalidate the in-memory RGBA clipboard cache.
+/// The editor calls this before writing an annotated PNG so that the next
+/// copy_image_to_clipboard reads from the new file instead of the stale
+/// raw-crop bytes that crop_and_finish wrote during capture.
+#[tauri::command]
+pub fn clear_clip_cache(state: State<'_, AppState>) -> Result<(), String> {
+    let mut cache = state.clip_cache.lock().map_err(|e| e.to_string())?;
+    *cache = None;
+    Ok(())
+}
+
+
 /// Monotonic counter — unique temp filename per capture to prevent Angular/browser cache no-ops.
 static CAPTURE_ID: AtomicU32 = AtomicU32::new(0);
 
@@ -214,7 +226,10 @@ pub async fn crop_image(
     Ok(out)
 }
 
-/// Save cropped image to user-chosen path as JPEG.
+/// Save image to user-chosen path.
+/// Output format is determined by the `dest_path` extension:
+///   - `.png` → lossless PNG
+///   - anything else → JPEG at JPEG_QUALITY
 #[tauri::command]
 pub async fn save_image(src_path: String, dest_path: String) -> Result<(), String> {
     tauri::async_runtime::spawn_blocking(move || -> Result<(), String> {
@@ -222,14 +237,27 @@ pub async fn save_image(src_path: String, dest_path: String) -> Result<(), Strin
             .map_err(|e| format!("Failed to open: {}", e))?
             .decode()
             .map_err(|e| format!("Failed to decode: {}", e))?;
-        let rgb = img.into_rgb8();
+
+        let ext = std::path::Path::new(&dest_path)
+            .extension()
+            .and_then(|s| s.to_str())
+            .unwrap_or("")
+            .to_lowercase();
+
         let file = File::create(&dest_path)
             .map_err(|e| format!("Failed to create file: {}", e))?;
         let mut writer = BufWriter::new(file);
-        let mut encoder = image::codecs::jpeg::JpegEncoder::new_with_quality(&mut writer, JPEG_QUALITY);
-        encoder
-            .encode_image(&image::DynamicImage::ImageRgb8(rgb))
-            .map_err(|e| format!("Failed to encode JPEG: {}", e))
+
+        if ext == "png" {
+            img.write_to(&mut writer, image::ImageFormat::Png)
+                .map_err(|e| format!("Failed to encode PNG: {}", e))
+        } else {
+            let rgb = img.into_rgb8();
+            let mut encoder = image::codecs::jpeg::JpegEncoder::new_with_quality(&mut writer, JPEG_QUALITY);
+            encoder
+                .encode_image(&image::DynamicImage::ImageRgb8(rgb))
+                .map_err(|e| format!("Failed to encode JPEG: {}", e))
+        }
     })
     .await
     .map_err(|e| format!("Task join error: {}", e))?

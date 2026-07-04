@@ -108,6 +108,7 @@ pub fn run() {
             image_processor::crop_and_finish,
             image_processor::save_image,
             image_processor::copy_image_to_clipboard,
+            image_processor::clear_clip_cache,
             show_overlay,
             finish_capture,
             hide_overlay
