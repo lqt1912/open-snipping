@@ -1,35 +1,48 @@
 <div class="editor-shell" tabindex="0">
 
-  <!-- ══════════════════════ TOOLBAR ══════════════════════ -->
+  <!-- ══════════ TOOLBAR ══════════ -->
   <div class="editor-toolbar">
 
     <!-- Brand -->
-    <span class="brand">✂ Open Snipping</span>
+    <span class="brand">
+      <svg class="brand-icon" viewBox="0 0 24 24" fill="none">
+        <circle cx="6" cy="6" r="3" stroke="currentColor" stroke-width="1.5"/>
+        <circle cx="6" cy="18" r="3" stroke="currentColor" stroke-width="1.5"/>
+        <line x1="8.5" y1="7.5" x2="19.5" y2="18.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="8.5" y1="16.5" x2="14" y2="11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="16" y1="9" x2="19.5" y2="5.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+    </span>
     <div class="divider"></div>
 
     <!-- ── Drawing Tools ── -->
     <div class="tool-group" role="toolbar" aria-label="Drawing tools">
       <button id="tool-pen"
               class="tool-btn" [class.active]="activeTool === 'pen'"
-              (click)="setTool('pen')" title="Pen – freehand draw">
-        🖊
+              (click)="setTool('pen')" title="Pen">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M11 2l3 3-8 8H3v-3z"/>
+        </svg>
       </button>
       <button id="tool-highlight"
               class="tool-btn" [class.active]="activeTool === 'highlight'"
               (click)="setTool('highlight')" title="Highlight">
-        🖍
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+          <rect x="2" y="5" width="12" height="6" rx="1.5"/>
+          <line x1="5" y1="13" x2="11" y2="13" stroke-width="1.2"/>
+        </svg>
       </button>
       <button id="tool-rectangle"
               class="tool-btn" [class.active]="activeTool === 'rectangle'"
               (click)="setTool('rectangle')" title="Rectangle">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
-          <rect x="2" y="4" width="12" height="8" rx="1"/>
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+          <rect x="2" y="4" width="12" height="8" rx="1.5"/>
         </svg>
       </button>
       <button id="tool-arrow"
               class="tool-btn" [class.active]="activeTool === 'arrow'"
               (click)="setTool('arrow')" title="Arrow">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
           <line x1="2" y1="14" x2="13" y2="3"/>
           <polyline points="7,3 13,3 13,9"/>
         </svg>
@@ -37,12 +50,15 @@
       <button id="tool-text"
               class="tool-btn" [class.active]="activeTool === 'text'"
               (click)="setTool('text')" title="Text">
-        <span style="font-weight:700;font-size:14px">T</span>
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+          <line x1="3" y1="4" x2="13" y2="4"/>
+          <line x1="8" y1="4" x2="8" y2="13"/>
+        </svg>
       </button>
       <button id="tool-none"
               class="tool-btn" [class.active]="activeTool === 'none'"
-              (click)="setTool('none')" title="View / No tool">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+              (click)="setTool('none')" title="Pan / View">
+        <svg viewBox="0 0 16 16" fill="currentColor">
           <path d="M3 2l10 5-5 1.5L6.5 14z"/>
         </svg>
       </button>
@@ -52,7 +68,6 @@
 
     <!-- ── Color + Width ── -->
     <div class="tool-group" role="group" aria-label="Color and stroke width">
-      <!-- Preset swatches -->
       <div class="color-swatches">
         <button *ngFor="let c of presetColors"
                 class="swatch"
@@ -62,10 +77,12 @@
                 [title]="c">
         </button>
       </div>
-      <!-- Custom color picker -->
       <label class="color-picker-wrap" title="Custom color">
         <input type="color" [(ngModel)]="strokeColor" class="color-picker-input">
-        <span class="color-picker-icon">🎨</span>
+        <svg class="color-picker-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round">
+          <circle cx="8" cy="8" r="5.5"/>
+          <path d="M8 2.5v1M8 12.5v1M2.5 8h1M12.5 8h1"/>
+        </svg>
       </label>
 
       <div class="width-control">
@@ -73,7 +90,7 @@
                type="range" min="1" max="20" step="1"
                [(ngModel)]="strokeWidth"
                class="width-slider">
-        <span class="width-label">{{ strokeWidth }}px</span>
+        <span class="width-label">{{ strokeWidth }}</span>
       </div>
     </div>
 
@@ -84,7 +101,7 @@
       <button id="btn-undo"
               class="action-btn" [disabled]="!canUndo"
               (click)="undo()" title="Undo (Ctrl+Z)">
-        <svg width="15" height="15" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+        <svg viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
           <path d="M3 7a5 5 0 1 1 1 4.5"/>
           <polyline points="3,3 3,7 7,7"/>
         </svg>
@@ -93,7 +110,10 @@
       <button id="btn-clear"
               class="action-btn danger"
               (click)="clearAll()" title="Clear all drawings">
-        🗑 Clear
+        <svg viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="2,4 13,4"/><path d="M5 4V3h5v1"/><path d="M6 7v5M9 7v5"/><rect x="3" y="4" width="9" height="9" rx="1"/>
+        </svg>
+        Clear
       </button>
     </div>
 
@@ -101,11 +121,11 @@
 
     <!-- ── Zoom ── -->
     <div class="tool-group zoom-group">
-      <button id="btn-zoom-out" class="zoom-btn" (click)="zoomOut()" title="Zoom out (Ctrl+Scroll)">−</button>
-      <button id="btn-zoom-reset" class="zoom-label" (click)="resetZoom()" title="Reset zoom to 100%">
+      <button id="btn-zoom-out" class="zoom-btn" (click)="zoomOut()" title="Zoom out">−</button>
+      <button id="btn-zoom-reset" class="zoom-label" (click)="resetZoom()" title="Reset zoom">
         {{ zoomPercent }}
       </button>
-      <button id="btn-zoom-in" class="zoom-btn" (click)="zoomIn()" title="Zoom in (Ctrl+Scroll)">+</button>
+      <button id="btn-zoom-in" class="zoom-btn" (click)="zoomIn()" title="Zoom in">+</button>
       <button id="btn-zoom-fit" class="action-btn fit-btn" (click)="fitToViewport()" title="Fit to window">Fit</button>
     </div>
 
@@ -115,41 +135,53 @@
     <!-- ── Actions ── -->
     <div class="tool-group">
       <button id="btn-new-capture"
-              class="action-btn primary"
-              (click)="newCaptureRequest()" title="Take a new screenshot">
-        📷 New
+              class="action-btn secondary"
+              (click)="newCaptureRequest()" title="New screenshot">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="1" y="4" width="14" height="10" rx="2"/>
+          <circle cx="8" cy="9" r="2.5"/>
+          <path d="M6 4l1.2-1.5h1.6L10 4"/>
+        </svg>
+        New
       </button>
       <button id="btn-copy"
               class="action-btn"
               [class.success]="copySuccess"
               [disabled]="isCopying"
               (click)="copyToClipboard()"
-              title="Copy to clipboard (with annotations)">
-        {{ copySuccess ? '✓ Copied!' : (isCopying ? '⏳ Copying…' : '📋 Copy') }}
+              title="Copy to clipboard">
+        <svg *ngIf="!copySuccess" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="5" y="5" width="8" height="9" rx="1"/>
+          <path d="M10 5V3H2v9h3"/>
+        </svg>
+        <svg *ngIf="copySuccess" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+          <polyline points="3,8 6,11 12,4"/>
+        </svg>
+        {{ copySuccess ? 'Copied' : (isCopying ? '…' : 'Copy') }}
       </button>
       <button id="btn-save"
               class="action-btn save"
               [disabled]="isSaving"
               (click)="saveAs()"
-              title="Save as PNG (with annotations)">
-        {{ isSaving ? '⏳ Saving…' : '💾 Save As' }}
+              title="Save as PNG">
+        <svg viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 13h9M7.5 2v8M4.5 7l3 3 3-3"/>
+        </svg>
+        {{ isSaving ? '…' : 'Save' }}
       </button>
     </div>
 
   </div><!-- /toolbar -->
 
-  <!-- ══════════════════════ CANVAS VIEWPORT ══════════════════════ -->
+  <!-- ══════════ CANVAS VIEWPORT ══════════ -->
   <div class="canvas-viewport"
        #canvasViewport
        (wheel)="onWheel($event)">
 
-    <!-- Wrapper scales with zoom; CSS width/height create scroll region -->
     <div class="canvas-wrapper"
          [style.width.px]="canvasDisplayWidth"
          [style.height.px]="canvasDisplayHeight">
-      <!-- Layer 1: image (read-only) -->
       <canvas #imageCanvas class="canvas-layer image-canvas"></canvas>
-      <!-- Layer 2: annotations (receives all pointer events) -->
       <canvas #drawCanvas
               class="canvas-layer draw-canvas"
               [ngClass]="cursorClass"
@@ -160,15 +192,18 @@
       </canvas>
     </div>
 
-    <!-- Empty state / loading indicator -->
     <div *ngIf="!canvasDisplayWidth" class="empty-state">
-      <div class="empty-icon">🖼</div>
-      <p>Loading image…</p>
+      <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+        <rect x="6" y="10" width="36" height="28" rx="3"/>
+        <circle cx="24" cy="24" r="8"/>
+        <circle cx="24" cy="24" r="3"/>
+      </svg>
+      <p>Loading…</p>
     </div>
 
   </div><!-- /canvas-viewport -->
 
-  <!-- ══════════════════════ TEXT INPUT OVERLAY ══════════════════════ -->
+  <!-- ══════════ TEXT INPUT OVERLAY ══════════ -->
   <input *ngIf="showTextInput"
          #textInput
          id="text-tool-input"
@@ -179,6 +214,6 @@
          [(ngModel)]="textInputValue"
          (keydown.enter)="confirmText()"
          (keydown.escape)="cancelText()"
-         placeholder="Type then press Enter…">
+         placeholder="Type · Enter to confirm">
 
 </div>

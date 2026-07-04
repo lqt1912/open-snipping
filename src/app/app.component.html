@@ -6,11 +6,27 @@
 <!-- MAIN: LAUNCHER -->
 <ng-container *ngIf="mode === 'launcher'">
   <div class="launcher">
-    <h1>✂️ Open Snipping</h1>
-    <p>Select a region of your screen to capture</p>
+    <div class="brand">
+      <svg class="scissors-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="6" cy="6" r="3" stroke="currentColor" stroke-width="1.5"/>
+        <circle cx="6" cy="18" r="3" stroke="currentColor" stroke-width="1.5"/>
+        <line x1="8.5" y1="7.5" x2="19.5" y2="18.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="8.5" y1="16.5" x2="14" y2="11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="16" y1="9" x2="19.5" y2="5.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      <span class="brand-name">Open Snipping</span>
+    </div>
+
     <button class="capture-btn" (click)="startCapture()">
-      📷 New Capture
+      <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="2" y="5" width="16" height="12" rx="2" stroke="currentColor" stroke-width="1.4"/>
+        <circle cx="10" cy="11" r="3" stroke="currentColor" stroke-width="1.4"/>
+        <path d="M7 5l1.5-2h3L13 5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      New Capture
     </button>
+
+    <p class="hint">Press the button or use the shortcut</p>
   </div>
 </ng-container>
 

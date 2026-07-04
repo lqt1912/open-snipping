@@ -7,6 +7,9 @@
   ],
   "permissions": [
     "core:default",
+    "core:window:allow-set-size",
+    "core:window:allow-set-resizable",
+    "core:window:allow-center",
     "clipboard-manager:default",
     "clipboard-manager:allow-write-image",
     "dialog:default",

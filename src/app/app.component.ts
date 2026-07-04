@@ -3,9 +3,12 @@ import { CommonModule } from '@angular/common';
 import { OverlayComponent } from './components/overlay/overlay.component';
 import { EditorComponent } from './components/editor/editor.component';
 import { invoke } from '@tauri-apps/api/core';
-import { getCurrentWindow } from '@tauri-apps/api/window';
+import { getCurrentWindow, LogicalSize } from '@tauri-apps/api/window';
 import { listen } from '@tauri-apps/api/event';
 import type { UnlistenFn } from '@tauri-apps/api/event';
+
+const LAUNCHER_SIZE = new LogicalSize(360, 200);
+const EDITOR_SIZE   = new LogicalSize(1280, 800);
 
 @Component({
   selector: 'app-root',
@@ -20,27 +23,28 @@ export class AppComponent implements OnInit, OnDestroy {
   isOverlayWindow = false;
 
   private unlistenCropReady?: UnlistenFn;
+  private win = getCurrentWindow();
 
   constructor(private zone: NgZone) {}
 
   async ngOnInit() {
-    const win = getCurrentWindow();
-    this.isOverlayWindow = win.label === 'overlay';
+    this.isOverlayWindow = this.win.label === 'overlay';
 
     if (this.isOverlayWindow) {
       this.mode = 'overlay';
       return;
     }
 
-    // Use Tauri's official event system to receive crop-ready from Rust.
-    // emit_to() / listen() is reliable cross-window: Tauri queues and delivers
-    // the event once the window's JS runtime is ready.
     this.unlistenCropReady = await listen<string>('crop-ready', (event) => {
       const path = event.payload;
       console.log('[main] crop-ready received, path:', path);
-      this.zone.run(() => {
+      this.zone.run(async () => {
         this.croppedImagePath = path;
         this.mode = 'editor';
+        // Expand to editor size, allow resize, re-center
+        await this.win.setResizable(true);
+        await this.win.setSize(EDITOR_SIZE);
+        await this.win.center();
       });
     });
   }
@@ -53,8 +57,12 @@ export class AppComponent implements OnInit, OnDestroy {
     await invoke('show_overlay');
   }
 
-  onEditorClosed() {
+  async onEditorClosed() {
     this.croppedImagePath = null;
     this.mode = 'launcher';
+    // Shrink back and lock size for launcher
+    await this.win.setResizable(false);
+    await this.win.setSize(LAUNCHER_SIZE);
+    await this.win.center();
   }
 }
