@@ -5,10 +5,8 @@ def fix_icon(input_path, output_path):
     width, height = img.size
     pixels = img.load()
     
-    # We will use BFS to flood fill the corners
     def flood_fill(start_x, start_y):
         target_color = pixels[start_x, start_y]
-        # Only fill if the corner is somewhat white/grayish
         if target_color[0] < 200 or target_color[1] < 200 or target_color[2] < 200:
             return
             
@@ -21,15 +19,12 @@ def fix_icon(input_path, output_path):
                 continue
             visited.add((x, y))
             
-            # check bounds
             if x < 0 or x >= width or y < 0 or y >= height:
                 continue
                 
             r, g, b, a = pixels[x, y]
             
-            # Define tolerance for anti-aliasing
             if r > 200 and g > 200 and b > 200 and a > 0:
-                # Make it transparent
                 pixels[x, y] = (255, 255, 255, 0)
                 queue.append((x + 1, y))
                 queue.append((x - 1, y))
@@ -42,6 +37,5 @@ def fix_icon(input_path, output_path):
     flood_fill(width - 1, height - 1)
     
     img.save(output_path, "PNG")
-    print(f"Saved fixed icon to {output_path}")
 
 fix_icon("src-tauri/icons/icon.png", "src-tauri/icons/icon.png")

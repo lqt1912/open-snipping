@@ -50,7 +50,8 @@ export class AppComponent implements OnInit, OnDestroy {
       this.zone.run(async () => {
         this.croppedImagePath = path;
         this.mode = 'editor';
-        await this.win.setResizable(true);
+        await this.win.show();
+        await this.win.setFocus();
         await this.win.setSize(EDITOR_SIZE);
         await this.win.center();
       });
@@ -62,15 +63,13 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   async startCapture() {
-    await invoke('show_overlay');
+    await invoke('trigger_capture_from_ui');
   }
 
   async onEditorClosed() {
     this.croppedImagePath = null;
     this.mode = 'launcher';
-    await this.win.setResizable(false);
-    await this.win.setSize(LAUNCHER_SIZE);
-    await this.win.center();
+    await invoke('close_editor');
   }
 
   // ── Hotkey recording ─────────────────────────────────────────
@@ -84,8 +83,28 @@ export class AppComponent implements OnInit, OnDestroy {
     this.isRecording = false;
   }
 
+  private isMetaDown = false;
+
+  @HostListener('window:keyup', ['$event'])
+  onKeyUp(event: KeyboardEvent) {
+    if (event.key === 'Meta' || event.key === 'OS' || event.key === 'Super') {
+      this.isMetaDown = false;
+    }
+  }
+
   @HostListener('window:keydown', ['$event'])
   async onKeyDown(event: KeyboardEvent) {
+    if (event.key === 'Meta' || event.key === 'OS' || event.key === 'Super') {
+      this.isMetaDown = true;
+    }
+
+    if (event.key === 'Escape' && !this.isRecording) {
+      if (this.mode === 'launcher') {
+        await this.win.hide();
+      }
+      return;
+    }
+
     if (!this.isRecording) return;
     event.preventDefault();
     event.stopPropagation();
@@ -101,7 +120,7 @@ export class AppComponent implements OnInit, OnDestroy {
     if (event.ctrlKey)  mods.push('Ctrl');
     if (event.altKey)   mods.push('Alt');
     if (event.shiftKey) mods.push('Shift');
-    if (event.metaKey)  mods.push('Super');
+    if (event.metaKey || this.isMetaDown)  mods.push('Super');
 
     // Ignore bare modifier key presses — wait for the actual key
     if (['Control', 'Alt', 'Shift', 'Meta'].includes(event.key)) return;
@@ -126,8 +145,39 @@ export class AppComponent implements OnInit, OnDestroy {
       });
     } catch (e) {
       this.zone.run(() => {
-        this.hotkeyError = `Could not register "${hotkey}" — key may be taken by another app.`;
+        this.hotkeyError = `Lỗi: ${e}`;
       });
+    }
+  }
+
+  requiresSuper(): boolean {
+    return this.currentHotkey.includes('Super+');
+  }
+
+  async toggleSuper(event: any) {
+    const checked = event.target.checked;
+    let newHotkey = this.currentHotkey;
+    
+    if (checked && !newHotkey.includes('Super+')) {
+      newHotkey = 'Super+' + newHotkey;
+    } else if (!checked && newHotkey.includes('Super+')) {
+      newHotkey = newHotkey.replace('Super+', '');
+    }
+
+    if (newHotkey === this.currentHotkey) return;
+
+    try {
+      await invoke('update_hotkey', { hotkey: newHotkey });
+      this.zone.run(() => {
+        this.currentHotkey = newHotkey;
+        this.hotkeyError   = '';
+      });
+    } catch (e) {
+      this.zone.run(() => {
+        this.hotkeyError = `Lỗi: ${e}`;
+      });
+      // Revert checkbox state visually if failed
+      event.target.checked = !checked;
     }
   }
 

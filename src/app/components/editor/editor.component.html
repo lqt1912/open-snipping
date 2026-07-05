@@ -134,6 +134,14 @@
 
     <!-- ── Actions ── -->
     <div class="tool-group">
+      <button id="btn-home"
+              class="action-btn secondary"
+              (click)="closeEditor()" title="Return to Launcher">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M1 8l7-6 7 6M3 6v8h4v-4h2v4h4V6"/>
+        </svg>
+        Home
+      </button>
       <button id="btn-new-capture"
               class="action-btn secondary"
               (click)="newCaptureRequest()" title="New screenshot">

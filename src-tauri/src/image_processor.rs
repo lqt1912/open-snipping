@@ -128,11 +128,15 @@ pub async fn crop_and_finish(
 
     // 1. Window management — instant.
     if let Some(overlay) = app.get_webview_window("overlay") {
-        overlay.hide().map_err(|e| e.to_string())?;
+        let _ = overlay.hide();
     }
+    
     if let Some(main) = app.get_webview_window("main") {
-        main.show().map_err(|e| e.to_string())?;
-        main.set_focus().map_err(|e| e.to_string())?;
+        let _ = main.set_size(tauri::Size::Logical(tauri::LogicalSize { width: 1280.0, height: 800.0 }));
+        let _ = main.center();
+        let _ = main.unminimize();
+        let _ = main.show();
+        let _ = main.set_focus();
     }
 
     // 2. Take pre-decoded screen from cache.

@@ -68,18 +68,20 @@ fn save_hotkey(app: &tauri::AppHandle, hotkey: &str) {
 
 fn trigger_capture(app: &tauri::AppHandle) {
     println!("[trigger_capture] Called!");
-    if let Some(w) = app.get_webview_window("main") {
-        let _ = w.hide();
-    }
-    if let Some(overlay) = app.get_webview_window("overlay") {
-        let _ = overlay.show();
-        let _ = overlay.set_focus();
-        let _ = overlay.emit("capture-start", ());
-    }
+    // DO NOT hide the main window here. 
+    // Hiding the main window might cause the window manager to alter the z-order 
+    // or minimize other windows (like Cinnamon Settings) unexpectedly.
+    
     let app2 = app.clone();
     tauri::async_runtime::spawn(async move {
         match tauri::async_runtime::spawn_blocking(capture::do_capture).await {
             Ok(Ok(path)) => {
+                if let Some(overlay) = app2.get_webview_window("overlay") {
+                    let _ = overlay.show();
+                    let _ = overlay.set_focus();
+                    // Tell angular the capture is ready and it can stop the 'isCapturing' transparent state
+                    let _ = overlay.emit("capture-start", ());
+                }
                 if let Err(e) = app2.emit_to("overlay", "capture-ready", &path) {
                     eprintln!("[trigger_capture] emit failed: {e}");
                 }
@@ -124,6 +126,24 @@ fn update_hotkey(
 #[tauri::command]
 async fn show_overlay(app: tauri::AppHandle) -> Result<(), String> {
     trigger_capture(&app);
+    Ok(())
+}
+
+#[tauri::command]
+async fn trigger_capture_from_ui(app: tauri::AppHandle) -> Result<(), String> {
+    if let Some(main) = app.get_webview_window("main") {
+        let _ = main.minimize();
+    }
+    trigger_capture(&app);
+    Ok(())
+}
+
+#[tauri::command]
+async fn close_editor(app: tauri::AppHandle) -> Result<(), String> {
+    if let Some(main) = app.get_webview_window("main") {
+        let _ = main.set_size(tauri::Size::Logical(tauri::LogicalSize { width: 360.0, height: 200.0 }));
+        let _ = main.center();
+    }
     Ok(())
 }
 
@@ -190,8 +210,10 @@ pub fn run() {
             image_processor::copy_image_to_clipboard,
             image_processor::clear_clip_cache,
             show_overlay,
+            trigger_capture_from_ui,
             finish_capture,
             hide_overlay,
+            close_editor,
             get_hotkey,
             update_hotkey,
         ])

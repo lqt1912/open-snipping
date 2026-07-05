@@ -2,7 +2,7 @@ import {
   Component, HostListener, OnInit, OnDestroy, NgZone
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { invoke } from '@tauri-apps/api/core';
+import { invoke, convertFileSrc } from '@tauri-apps/api/core';
 import { listen } from '@tauri-apps/api/event';
 import { getCurrentWindow } from '@tauri-apps/api/window';
 import type { UnlistenFn } from '@tauri-apps/api/event';
@@ -28,7 +28,8 @@ export class OverlayComponent implements OnInit, OnDestroy {
   startY = 0;
   selection: Selection | null = null;
 
-  private imagePath: string | null = null;
+  imagePath: string | null = null;
+  bgUrl: string = 'none';
   private unlistenFocus?: UnlistenFn;
   private unlistenCapture?: UnlistenFn;
 
@@ -42,6 +43,7 @@ export class OverlayComponent implements OnInit, OnDestroy {
     this.unlistenFocus = await listen('capture-start', () => {
       this.zone.run(() => {
         this.imagePath = null;
+        this.bgUrl = 'none';
         this.isSelecting = false;
         this.selection = null;
         this.isCapturing = true;  // wait for capture-ready
@@ -54,6 +56,7 @@ export class OverlayComponent implements OnInit, OnDestroy {
       const path = event.payload;
       this.zone.run(() => {
         this.imagePath = path;
+        this.bgUrl = `url(${convertFileSrc(path)}?v=${Date.now()})`;
         this.isCapturing = false;
         console.log('[overlay] Capture ready:', path);
       });
@@ -72,6 +75,8 @@ export class OverlayComponent implements OnInit, OnDestroy {
     this.unlistenFocus?.();
     this.unlistenCapture?.();
   }
+
+
 
   onMouseDown(event: MouseEvent) {
     if (this.isCapturing) return;
@@ -127,12 +132,14 @@ export class OverlayComponent implements OnInit, OnDestroy {
     }
   }
 
-  @HostListener('window:keydown.escape', ['$event'])
-  async onEscapeKey(event: KeyboardEvent) {
-    event.preventDefault();
-    this.isSelecting = false;
-    this.selection = null;
-    await invoke('hide_overlay');
+  @HostListener('window:keydown', ['$event'])
+  async onKeyDown(event: KeyboardEvent) {
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      this.isSelecting = false;
+      this.selection = null;
+      await invoke('hide_overlay');
+    }
   }
 
   @HostListener('contextmenu', ['$event'])

@@ -47,6 +47,15 @@
         Press shortcut… <span class="esc-hint">Esc to cancel</span>
       </button>
 
+      <div class="super-toggle" *ngIf="!isRecording" style="margin-top: 12px;">
+        <label style="font-size: 13px; color: var(--text-muted); display: flex; align-items: center; justify-content: center; gap: 6px; cursor: pointer;">
+          <input type="checkbox"
+                 [checked]="requiresSuper()"
+                 (change)="toggleSuper($event)">
+          Kèm phím Windows (Super)
+        </label>
+      </div>
+
       <p class="shortcut-error" *ngIf="hotkeyError">{{ hotkeyError }}</p>
     </div>
   </div>
