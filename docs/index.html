@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Open Snipping - A fast, lightweight, and keyboard-friendly screenshot tool for Linux, built with Tauri and Angular.">
+    <title>Open Snipping | The Modern Linux Screenshot Tool</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container nav-container">
+            <a href="#" class="logo">
+                <img src="images/logo.png" alt="Open Snipping Logo">
+                <span>Open Snipping</span>
+            </a>
+            <nav class="nav-links">
+                <a href="#features">Features</a>
+                <a href="#installation">Installation</a>
+                <a href="https://github.com/lqt1912/open-snipping" target="_blank" class="nav-btn">GitHub</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero container">
+            <div class="hero-content">
+                <h1 class="hero-title">Capture Your Screen,<br><span class="text-accent">Effortlessly on Linux.</span></h1>
+                <p class="hero-subtitle">A fast, lightweight, and keyboard-friendly screenshot tool built natively for X11 and Wayland.</p>
+                <div class="hero-cta">
+                    <a href="https://github.com/lqt1912/open-snipping/releases/latest" class="btn btn-primary">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                        Download for Linux
+                    </a>
+                    <a href="#installation" class="btn btn-secondary">Installation Guide</a>
+                </div>
+            </div>
+            <div class="hero-image">
+                <div class="glass-panel">
+                    <img src="images/mockup.png" alt="Open Snipping App Mockup">
+                </div>
+            </div>
+        </section>
+
+        <section id="features" class="features container">
+            <h2 class="section-title">Designed for Productivity</h2>
+            <p class="section-subtitle">Everything you need to capture, edit, and share instantly.</p>
+            
+            <div class="features-grid">
+                <div class="feature-card reveal">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Silent Fullscreen</h3>
+                    <p>Instantly captures the entire screen when triggered. No delays, no interruptions.</p>
+                </div>
+                <div class="feature-card reveal">
+                    <div class="feature-icon">🎯</div>
+                    <h3>Smart Overlay</h3>
+                    <p>Frameless, transparent overlay to focus purely on the selected area you want to snip.</p>
+                </div>
+                <div class="feature-card reveal">
+                    <div class="feature-icon">✂️</div>
+                    <h3>Select & Crop</h3>
+                    <p>Click and drag with precision to define the exact region you want to capture.</p>
+                </div>
+                <div class="feature-card reveal">
+                    <div class="feature-icon">🎨</div>
+                    <h3>Editor Canvas</h3>
+                    <p>An HTML5 canvas-based editor for quick annotations like drawing, highlighting, and arrows.</p>
+                </div>
+                <div class="feature-card reveal">
+                    <div class="feature-icon">📋</div>
+                    <h3>Quick Export</h3>
+                    <p>Instantly copy the snip to your clipboard or save it directly as an image file to disk.</p>
+                </div>
+                <div class="feature-card reveal">
+                    <div class="feature-icon">⌨️</div>
+                    <h3>Global Hotkeys</h3>
+                    <p>Quick access anywhere via customizable global hotkeys (Default: Ctrl+Shift+D).</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="installation" class="installation container reveal">
+            <h2 class="section-title">Quick Installation</h2>
+            <div class="install-card glass-panel">
+                <p>Open Snipping relies on standard lightweight Linux utilities for screen capturing.</p>
+                
+                <div class="terminal-mockup">
+                    <div class="terminal-header">
+                        <span class="dot red"></span>
+                        <span class="dot yellow"></span>
+                        <span class="dot green"></span>
+                    </div>
+                    <div class="terminal-body">
+                        <code><span class="prompt">$</span> sudo apt-get install scrot grim</code>
+                    </div>
+                </div>
+                <p class="install-text">After installing dependencies, download the latest <code>.deb</code> or <code>.AppImage</code> from our <a href="https://github.com/lqt1912/open-snipping/releases/latest" class="text-accent">Releases Page</a>.</p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container footer-content">
+            <div class="footer-logo">
+                <img src="images/logo.png" alt="Open Snipping Logo">
+                <span>Open Snipping</span>
+            </div>
+            <p>&copy; 2026 lqt1912. Released under the MIT License.</p>
+            <div class="footer-links">
+                <a href="https://github.com/lqt1912/open-snipping" target="_blank">GitHub</a>
+                <a href="https://github.com/lqt1912/open-snipping/issues" target="_blank">Issues</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
